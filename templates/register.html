@@ -20,12 +20,15 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                       <div class="col-lg-6">
-                        <a type="button" class="btn btn-block" href="{% url 'customer_register' %}">I am a customer</a>
-                       </div>
-                       <div class="col-lg-6">
-                        <a type="button" class="btn btn-block" href="{% url 'employee_register' %}">I am an employee</a>
-                       </div>
+                        <div class="col-sm">
+                            <a type="button" class="btn btn-block" href="{% url 'student_register' %}">I am a student</a>
+                        </div>
+                        <div class="col-sm">
+                            <a type="button" class="btn btn-block" href="{% url 'teacher_register' %}">I am a teacher</a>
+                        </div>
+                        <div class="col-sm">
+                            <a type="button" class="btn btn-block" href="{% url 'admin_register' %}">I am an admin</a>
+                        </div>
                     </div>
                   </form>
                 </div>

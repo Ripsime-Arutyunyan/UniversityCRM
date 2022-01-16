@@ -1,33 +1,52 @@
 from django.contrib.auth import login, logout,authenticate
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.views.generic import CreateView
-from .form import CustomerSignUpForm, EmployeeSignUpForm
 from django.contrib.auth.forms import AuthenticationForm
+
+from .forms import StudentSignUpForm, TeacherSignUpForm, AdminSignUpForm
 from .models import User
+
+
+def accounts_home(request):
+    return render(request, '../templates/index.html')
+
 
 def register(request):
     return render(request, '../templates/register.html')
 
-class customer_register(CreateView):
+class student_register(CreateView):
     model = User
-    form_class = CustomerSignUpForm
-    template_name = '../templates/customer_register.html'
+    form_class = StudentSignUpForm
+    template_name = '../templates/student_register.html'
 
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('/')
+        return redirect('login')
 
-class employee_register(CreateView):
+
+class teacher_register(CreateView):
     model = User
-    form_class = EmployeeSignUpForm
-    template_name = '../templates/employee_register.html'
+    form_class = TeacherSignUpForm
+    template_name = '../templates/teacher_register.html'
 
     def form_valid(self, form):
         user = form.save()
         login(self.request, user)
-        return redirect('/')
+        return redirect('login')
+
+
+class admin_register(CreateView):
+    model = User
+    form_class = AdminSignUpForm
+    template_name = '../templates/admin_register.html'
+
+    def form_valid(self, form):
+        user = form.save()
+        login(self.request, user)
+        return redirect('login')
 
 
 def login_request(request):
@@ -39,14 +58,21 @@ def login_request(request):
             user = authenticate(username=username, password=password)
             if user is not None :
                 login(request,user)
-                return redirect('/')
+                if user.is_teacher:
+                    return HttpResponseRedirect('https://www.theguardian.com/teacher-network/2017/aug/15/ten-books-every-teacher-should-read')
+                    # return redirect('teacher_dashboard')
+                elif user.is_student:
+                    return HttpResponseRedirect('https://rau.am/')
+                    # return redirect('student_dashboard')
+                else:
+                    return redirect('../../admin')
             else:
                 messages.error(request,"Invalid username or password")
         else:
                 messages.error(request,"Invalid username or password")
-    return render(request, '../templates/login.html',
-    context={'form':AuthenticationForm()})
+    return render(request, '../templates/login.html', context={'form': AuthenticationForm()})
+
 
 def logout_view(request):
     logout(request)
-    return redirect('/')
+    return redirect('home')
